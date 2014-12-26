@@ -6,7 +6,7 @@
 #########################################################################
 
 response.logo = A('RSVP',XML('&nbsp;'),
-                  _class="brand",_href="")
+                  _class="brand",_href="#")
 response.title = request.application.replace('_',' ').title()
 response.subtitle = ''
 
@@ -26,6 +26,10 @@ response.menu = [
     (T('Events'), False, URL('default', 'index'), []),
     (T('Create Event'), False, URL('default', 'create'), [])
 ]
+
+if auth.is_logged_in():
+    response.menu.append((T('My Events'), False, URL('default', 'my_events'), []))
+    response.menu.append((T('My Participation'), False, URL('default', 'events_participated_in'), []))
 
 if auth.has_membership('managers'):
     response.menu.append(

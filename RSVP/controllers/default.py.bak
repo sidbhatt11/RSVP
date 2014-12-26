@@ -10,10 +10,54 @@ def create():
     form = SQLFORM(db.events).process()
     return dict(form=form)
 
+@auth.requires_login()
+def edit_event():
+    if not request.args:
+        redirect(URL('index'))
+    eventid = request.args[0]
+    event = db(db.events.id == eventid).select().first()
+    if not event.created_by == auth.user.id:
+        form = "Either the event does not exist or you do not have enough rights to edit this event"
+    else:
+        form = SQLFORM(db.events, event,showid=False).process()
+    return dict(form=form)
+
+@auth.requires_login()
+def delete_event():
+    if not request.args:
+        redirect(URL('index'))
+    eventid = request.args[0]
+    event = db(db.events.id == eventid).select().first()
+    if not event.created_by == auth.user.id:
+        session.flash = T("Either the event does not exist or you do not have enough rights to delete this event")
+    else:
+        db(db.events.id==event.id).delete()
+        db(db.attendance.event_id == event.id).delete()
+        session.flash = T("Event Deleted successfully")
+    redirect(URL('my_events'))
+
+@auth.requires_login()
+def my_events():
+    events = db(db.events.created_by == auth.user.id).select()
+    for event in events:
+        event.count = db((db.attendance.event_id == event.id) & (db.attendance.attending == "yes")).count()
+    return dict(events=events)
+
+@auth.requires_login()
+def events_participated_in():
+    events_attending = db((db.attendance.user_id == auth.user.id) & (db.attendance.attending == "yes") & (db.events.from_date >= request.now.date())).select(db.events.ALL, left=db.events.on(db.events.id==db.attendance.event_id))
+    for event in events_attending:
+        event.count = db((db.attendance.event_id == event.id) & (db.attendance.attending == "yes")).count()
+    events_attended = db((db.attendance.user_id == auth.user.id) & (db.attendance.attending == "yes") & (db.events.from_date < request.now.date())).select(db.events.ALL, left=db.events.on(db.events.id==db.attendance.event_id))
+    for event in events_attended:
+        event.count = db((db.attendance.event_id == event.id) & (db.attendance.attending == "yes")).count()
+    return dict(events_attended=events_attended,events_attending=events_attending)
+
 def show():
     if not request.args:
         redirect(URL('index'))
     event = db.events(request.args(0,cast=int))
+    event.count = db((db.attendance.event_id == event.id) & (db.attendance.attending == "yes")).count()
     if auth.is_logged_in():
         user.name = "%s %s" % (auth.user.first_name, auth.user.last_name)
         user.altstr = "Changed your mind ?"
@@ -77,7 +121,7 @@ def user():
     """
     return dict(form=auth())
 
-
+@auth.requires_login()
 @cache.action()
 def download():
     """

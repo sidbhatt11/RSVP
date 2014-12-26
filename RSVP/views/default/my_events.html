@@ -1,0 +1,21 @@
+{{extend 'layout.html'}}
+<h1>My Events</h1><hr>
+{{for event in events:}}
+    <div class="well">
+            <h3>
+                    <a href="{{=URL('show',args=[event.id])}}">{{=event.name}}</a> <small>by {{=event.event_by}}</small>
+            </h3>
+            <h4>
+                    at {{=event.event_location or ""}} from {{=event.from_date or ""}} {{=event.start_time or ""}} To {{=event.to_date or ""}} {{=event.stop_time or ""}}
+            </h4>
+            <h4>
+                <small>Event created by {{=event.created_by.first_name}} {{=event.created_by.last_name}} on {{=event.created_on}}</small>
+            </h4>
+            <h4>
+                    {{=event.count}} people attending
+            </h4>
+            <p>
+                    <a class="btn btn-primary" href="{{=URL('edit_event',args=[event.id])}}">Edit Event</a> <a class="btn btn-danger" href="{{=URL('delete_event',args=[event.id])}}">Delete Event</a>
+            </p>
+    </div>
+{{pass}}

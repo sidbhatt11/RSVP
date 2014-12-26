@@ -1,0 +1,37 @@
+{{extend 'layout.html'}}
+<h1>Events Attending</h1><hr>
+{{for event in events_attending:}}
+    <div class="well">
+            <h3>
+                    <a href="{{=URL('show',args=[event.id])}}">{{=event.name}}</a> <small>by {{=event.event_by}}</small>
+            </h3>
+            <h4>
+                    at {{=event.event_location or ""}} from {{=event.from_date or ""}} {{=event.start_time or ""}} To {{=event.to_date or ""}} {{=event.stop_time or ""}}
+            </h4>
+            <h4>
+                <small>Event created by {{=event.created_by.first_name}} {{=event.created_by.last_name}} on {{=event.created_on}}</small>
+            </h4>
+            <h4>
+                    {{=event.count}} people attending
+            </h4>
+    </div>
+{{pass}}
+
+
+<h1>Events Attending</h1><hr>
+{{for event in events_attended:}}
+    <div class="well">
+            <h3>
+                    <a href="{{=URL('show',args=[event.id])}}">{{=event.name}}</a> <small>by {{=event.event_by}}</small>
+            </h3>
+            <h4>
+                    at {{=event.event_location or ""}} from {{=event.from_date or ""}} {{=event.start_time or ""}} To {{=event.to_date or ""}} {{=event.stop_time or ""}}
+            </h4>
+            <h4>
+                <small>Event created by {{=event.created_by.first_name}} {{=event.created_by.last_name}} on {{=event.created_on}}</small>
+            </h4>
+            <h4>
+                    {{=event.count}} people attending
+            </h4>
+    </div>
+{{pass}}
