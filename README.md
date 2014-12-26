@@ -1,5 +1,6 @@
 RSVP
 ====
+Live Demo : https://sidbhatt11.pythonanywhere.com/RSVP/
 
 This is a web2py app created by Siddharth Bhatt. 
 This app allows users to create events and RSVP to them.
@@ -8,5 +9,6 @@ App provides a management interface for events and RSVP records to user group ca
 
 For any questions or support, please contact : 
 Siddharth Bhatt 
+
 Mail : sidbhatt11@yahoo.in
 Web : www.siddharthbhatt.com
